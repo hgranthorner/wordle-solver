@@ -1,0 +1,18 @@
+The game
+
+1. Game guesses 5 letters
+2. Player puts them in wordle
+3. Player marks outcome for each letter
+- Green if letter is in the right place
+- Yellow if letter is in the word but not in the right place
+- None/Black if letter isn't in the word
+4. Game guesses again
+- Needs to keep state
+    - List of letters that aren't in word
+    - List of letters that are in the word, but the positions they're not in
+    - List of letters where we know the position
+- Given that information, pick the word that has:
+    - All the correct green letters
+    - All the yellow letters in different places
+    - None of the missing/black letters
+5. Present new word to the user
