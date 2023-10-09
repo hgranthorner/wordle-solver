@@ -3,7 +3,6 @@ package dev.hgh.wordle;
 import dev.hgh.wordle.game.CharacterOutcome;
 import dev.hgh.wordle.game.Outcome;
 import dev.hgh.wordle.game.OutcomeColors;
-import dev.hgh.wordle.game.Wordle;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class WordleController {
+	private boolean hasGuessed;
 	@FXML
 	private TextField firstLetter;
 	@FXML
@@ -44,22 +44,26 @@ public class WordleController {
 	@FXML
 	private Label dirtyLabel;
 
-	private final Wordle game;
-	private boolean hasGuessed = false;
+	private final WordleViewModel game;
 
 	public WordleController() throws IOException {
 		URL wordUrl = Objects.requireNonNull(WordleController.class.getResource("wordlist.txt"));
 		List<String> words = Files.readAllLines(Path.of(wordUrl.getPath()));
-		game = new Wordle(words);
+		game = new WordleViewModel(words);
+		game.dirtyProperty().addListener((_observable, oldValue, newValue) -> {
+			if (newValue) {
+				dirtyLabel.setText("Dirty!");
+			} else {
+				dirtyLabel.setText("");
+			}
+		});
+		hasGuessed = false;
 	}
 
 	@FXML
 	protected void onGuessButtonClick() {
 		Outcome input = null;
-		if (!hasGuessed) {
-			hasGuessed = true;
-			dirtyLabel.setText("Dirty!");
-		} else {
+		if (hasGuessed) {
 			CharacterOutcome first = inputToCharacterOutcome(firstLetter, firstComboBox);
 			CharacterOutcome second = inputToCharacterOutcome(secondLetter, secondComboBox);
 			CharacterOutcome third = inputToCharacterOutcome(thirdLetter, thirdComboBox);
@@ -67,7 +71,9 @@ public class WordleController {
 			CharacterOutcome fifth = inputToCharacterOutcome(fifthLetter, fifthComboBox);
 			input = new Outcome(first, second, third, fourth, fifth);
 		}
+
 		var guess = game.guess(input);
+		hasGuessed = true;
 
 		firstLetter.setText(guess.substring(0, 1));
 		secondLetter.setText(guess.substring(1, 2));
@@ -91,7 +97,6 @@ public class WordleController {
 	public void onClearButtonClick() {
 		game.clear();
 		hasGuessed = false;
-		dirtyLabel.setText("");
 		for (var t : List.of(firstLetter, secondLetter, thirdLetter, fourthLetter, fifthLetter)) {
 			t.setText("");
 		}

@@ -7,12 +7,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class WorldApplication extends Application {
+public class WordleApplication extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(WorldApplication.class.getResource("wordle-view.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(WordleApplication.class.getResource("wordle-view.fxml"));
 		Scene scene = new Scene(fxmlLoader.load(), 500, 300);
-		stage.setTitle("Hello!");
+		stage.setTitle("Wordle Solver");
 		stage.setScene(scene);
 		stage.show();
 	}
