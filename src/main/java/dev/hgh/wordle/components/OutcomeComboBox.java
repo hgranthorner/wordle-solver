@@ -1,6 +1,6 @@
 package dev.hgh.wordle.components;
 
-import dev.hgh.wordle.OutcomeColors;
+import dev.hgh.wordle.game.OutcomeColors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;

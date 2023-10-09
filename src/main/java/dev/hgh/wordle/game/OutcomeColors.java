@@ -1,4 +1,4 @@
-package dev.hgh.wordle;
+package dev.hgh.wordle.game;
 
 public enum OutcomeColors {
 	None,

@@ -1,6 +1,7 @@
 package dev.hgh.wordle.game;
 
-import dev.hgh.wordle.OutcomeColors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -17,8 +18,11 @@ public class Wordle {
 		this.words = words;
 	}
 
-	public String guess(Optional<Outcome> previousOutcome) {
-		previousOutcome.ifPresent(this::updateState);
+	public String guess(@Nullable Outcome previousOutcome) {
+		if (previousOutcome != null) {
+			updateState(previousOutcome);
+		}
+
 		Stream<String> wordStream = words.stream();
 		for (var entry : found.entrySet()) {
 			Character c = entry.getKey();
@@ -46,7 +50,7 @@ public class Wordle {
 		return remainingWords.get(random.nextInt(remainingWords.size()));
 	}
 
-	private void updateState(Outcome previousOutcome) {
+	private void updateState(@NotNull Outcome previousOutcome) {
 		BiConsumer<CharacterOutcome, Position> update = (CharacterOutcome c, Position p) -> {
 			switch (c.outcome()) {
 				case None -> notInWord.add(c.character());

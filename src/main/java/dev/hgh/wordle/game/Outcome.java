@@ -1,7 +1,5 @@
 package dev.hgh.wordle.game;
 
-import dev.hgh.wordle.OutcomeColors;
-
 import java.util.List;
 
 public record Outcome(

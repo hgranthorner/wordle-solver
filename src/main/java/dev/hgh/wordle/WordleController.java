@@ -2,11 +2,14 @@ package dev.hgh.wordle;
 
 import dev.hgh.wordle.game.CharacterOutcome;
 import dev.hgh.wordle.game.Outcome;
+import dev.hgh.wordle.game.OutcomeColors;
 import dev.hgh.wordle.game.Wordle;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class WordleController {
 	@FXML
@@ -53,18 +55,17 @@ public class WordleController {
 
 	@FXML
 	protected void onGuessButtonClick() {
-		Optional<Outcome> input;
+		Outcome input = null;
 		if (!hasGuessed) {
 			hasGuessed = true;
 			dirtyLabel.setText("Dirty!");
-			input = Optional.empty();
 		} else {
-			CharacterOutcome first = new CharacterOutcome(firstLetter.getText().charAt(0), firstComboBox.getValue());
-			CharacterOutcome second = new CharacterOutcome(secondLetter.getText().charAt(0), secondComboBox.getValue());
-			CharacterOutcome third = new CharacterOutcome(thirdLetter.getText().charAt(0), thirdComboBox.getValue());
-			CharacterOutcome fourth = new CharacterOutcome(fourthLetter.getText().charAt(0), fourthComboBox.getValue());
-			CharacterOutcome fifth = new CharacterOutcome(fifthLetter.getText().charAt(0), fifthComboBox.getValue());
-			input = Optional.of(new Outcome(first, second, third, fourth, fifth));
+			CharacterOutcome first = inputToCharacterOutcome(firstLetter, firstComboBox);
+			CharacterOutcome second = inputToCharacterOutcome(secondLetter, secondComboBox);
+			CharacterOutcome third = inputToCharacterOutcome(thirdLetter, thirdComboBox);
+			CharacterOutcome fourth = inputToCharacterOutcome(fourthLetter, fourthComboBox);
+			CharacterOutcome fifth = inputToCharacterOutcome(fifthLetter, fifthComboBox);
+			input = new Outcome(first, second, third, fourth, fifth);
 		}
 		var guess = game.guess(input);
 
@@ -78,6 +79,13 @@ public class WordleController {
 				cb.setValue(OutcomeColors.None);
 			}
 		}
+	}
+
+	@Contract("_, _ -> new")
+	@NotNull
+	private CharacterOutcome inputToCharacterOutcome(@NotNull TextField firstLetter,
+	                                                 @NotNull ComboBox<OutcomeColors> firstComboBox) {
+		return new CharacterOutcome(firstLetter.getText().charAt(0), firstComboBox.getValue());
 	}
 
 	public void onClearButtonClick() {
